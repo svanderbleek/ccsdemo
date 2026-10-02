@@ -1,47 +1,52 @@
 (ns ccsdemo.core
-  (:require [reagent.dom.client :as rdc]
-            [re-frame.core :as rf]))
+  (:require [reagent.dom.client   :as rdc]
+            [re-frame.core        :as rfc]
+            [reitit.frontend.easy :as rfe]
+            [reitit.frontend      :as rfr]))
 
-(rf/reg-event-db
-  :init
-  (fn [_ _]
-    {:display "initializing..."}))
+(def routes
+  ["/"
+   [""       {:name ::home   :title "Home"}]
+   ["search" {:name ::search :title "Search"}]
+   ["pins"   {:name ::pins   :title "Pins"}]])
 
-(rf/reg-fx
-  :fetch
-  (fn [req]
-    (-> (js/fetch (:url req))
-        (.then (fn [resp] (.text resp)))
-        (.then (fn [body] (rf/dispatch [:later :loaded body]))))))
+(defn navigate [route]
+  (when route (rfc/dispatch [::navigate route])))
 
-(rf/reg-event-fx
-  :load
-  (fn [{:keys [db]} _]
-    {:fetch {:url "/api"}
-     :db (assoc db :display "loading...")}))
+(defn init-routes! []
+  (rfe/start! (rfr/router routes) navigate {:use-fragement true}))
 
-(rf/reg-event-db
-  :loaded
-  (fn [db [_ body]]
-    (assoc db :display body)))
-
-(rf/reg-sub
-  :display
+(rfc/reg-event-db
+  ::init
   (fn [db _]
-    (:display db)))
+    (if db db {:route ::home})))
 
-(rf/reg-event-fx
- :later
- (fn [_ [_ event & args]]
-   {:dispatch-later {:ms 1000 :dispatch (into [event] args)}}))
+(rfc/reg-event-db
+  ::navigate
+  (fn [db [_ route]]
+    (assoc db :route route)))
+
+(rfc/reg-sub
+ ::route
+ (fn [db _]
+   (:route db)))
 
 (defonce root (rdc/create-root (.getElementById js/document "app")))
 
+(defn make-key [obj]
+  (hash obj))
+
+(defn make-a [route]
+  [:a {:key (make-key route) :href (rfe/href (-> route second :name))} (-> route second :title)])
+
 (defn app []
-  (let [display (rf/subscribe [:display])]
-    [:h1 @display]))
+  (let [route @(rfc/subscribe [::route])]
+    [:div
+      [:nav (map make-a (rest routes))]
+      [:h1 (-> route :data :title)]]))
 
 (defn init []
-  (rf/dispatch-sync [:init])
-  (rf/dispatch [:later :load])
+  (rfc/clear-subscription-cache!)
+  (rfc/dispatch-sync [::init])
+  (init-routes!)
   (rdc/render root [app]))
