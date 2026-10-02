@@ -1,0 +1,7 @@
+{:deps {:aliases [:cljs]}
+ :builds
+ {:ccsdemo
+  {:target :browser
+   :output-dir "resources/public/js"
+   :devtools {:websocket-url "ws://localhost:9630/shadow-cljs"}
+   :modules {:main {:init-fn ccsdemo.core/init}}}}}

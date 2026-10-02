@@ -1,0 +1,12 @@
+{
+  "name": "ccsdemo",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "shadow-cljs": "3.5.3"
+  },
+  "dependencies": {
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  }
+}
