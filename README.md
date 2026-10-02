@@ -1,6 +1,10 @@
 # CCSDemo
 
-Demo project to develop proficiency with Clojure/ClojureScript
+Demo project in Clojure/ClojureScript with deploy to GCP
+
+The project uses CMS data on Hospices to create a simple sales tool to find potential leads
+
+Search starts by state with ordering by aggregate data on spend and number of patients, then can proceed to hopsices in that state with filtering by description. Once a hopsice is pinned the potential contacts can be explored and used to generate a google search for a contact. Pins allow the user to mark the pipeline state of the lead: Prospect/Contacted/Won/Lost.
 
 ## Run
 
@@ -15,28 +19,39 @@ go to `localhost:3001/index.html`
 
 ### Prod
 
+Tag docker image with version and update in `deployment.yaml`
+
 ```
-clj -T:build uber 
-# Can test with java -jar target/name.jar
+clj -T:build uber # Can test with java -jar target/name.jar
+
 docker buildx build --platform linux/amd64 -t us-central1-docker.pkg.dev/ccsdemo-510302/ccsdemo/app:version .
-# update version in deployment.yaml
 docker push us-central1-docker.pkg.dev/ccsdemo-510302/ccsdemo/app:version
+
 kubectl apply -f deployment.yaml
 kubectl get service ccsdemo-app-service
 ```
 
 go to `http://EXTERNAL-IP/index.html`
 
-[running](http://35.239.99.168/index.html) on GCP
-
-to save costs turn on and off with `num-nodes`
+To save costs delete images from repository and downscale nodes
 
 ```
-gcloud container clusters resize ccsdemo --num-nodes=0,1
+gcloud artifacts docker images delete us-central1-docker.pkg.dev/ccsdemo-510302/ccsdemo/app
+gcloud container clusters resize ccsdemo --num-nodes=0
 ```
+
+## Time Tracking
+
+1h - Frontend Routing
 
 ## Todo
 
-* Enable https
-* Connect server to Postgres
-* Display data in client
+* Home view
+* Ingest CMS backend data
+* Search View
+* Pins View
+* DB for Pins
+* Api for Pins
+* Frontend for Pins
+* Google for contact feature
+* Enable https (optional)
