@@ -8,9 +8,20 @@ Search starts by state with ordering by aggregate data on spend and number of pa
 
 ## Run
 
+### Setup
+
+Need some npm binaries to build
+
+```
+npm install -g shadow-cljs sass
+```
+
 ### Dev
 
 ```
+# only need to run once
+sass --load-path=node_modules/@picocss/pico/scss src/scss/ccsdemo.scss resources/public/css/ccsdemo.css
+
 clj -M:run                # start backend first
 shadow-cljs watch ccsdemo # frontend
 ```
