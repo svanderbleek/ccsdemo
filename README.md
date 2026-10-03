@@ -8,14 +8,12 @@ Search starts by state with ordering by aggregate data on spend and number of pa
 
 ## Data
 
-Data is not commited, needs to be downloaded from CMS and put in `data/files`
+Data is not commited, needs to be downloaded from CMS and put in `data/files`. Due to complexity of `.xslx` multi-page format a `.csv` needs to be made from the relevant page. This can be done in Google Sheets.
 
 ```
 clj -M:ingest
-=> (loadfile "data/injest.clj")
-=> hospice-enrollments
-| ENROLLMENT ID | ENROLLMENT STATE |
-...
+=> (di/fn, tc/fn) # Use ingest.clj and tablecloth to inspect data
+=> (ct/refresh)   # Load file changes for interactive development
 ```
 
 ## Run
@@ -66,7 +64,7 @@ gcloud container clusters resize ccsdemo --num-nodes=0
 
 1h - Frontend Routing  
 1h - Frontend Styling  
-1h - Data
+2h - Data
 
 ## Todo
 
