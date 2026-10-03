@@ -4,7 +4,7 @@ Demo project in Clojure/ClojureScript with deploy to GCP
 
 The project uses CMS data on Hospices to create a simple sales tool to find potential leads
 
-Search starts by state with ordering by aggregate data on spend and number of patients, then can proceed to hopsices in that state with filtering by description. Once a hopsice is pinned the potential contacts can be explored and used to generate a google search for a contact. Pins allow the user to mark the pipeline state of the lead: Prospect/Contacted/Won/Lost.
+Search starts by state with ordering by aggregate data on spend and number of patients, then can proceed to hopsices in that state with filtering by description. Once a hopsice is pinned it can be used to find potential contacts and track the state of the lead, such as Open/Won/Lost, and state of contacts, such as Found/Talking/Unreachable.
 
 ## Data
 
@@ -33,7 +33,6 @@ npm install -g shadow-cljs sass
 ```
 # only need to run once
 sass --load-path=node_modules/@picocss/pico/scss src/scss/ccsdemo.scss resources/public/css/ccsdemo.css
-
 clj -M:run                # start backend first
 shadow-cljs watch ccsdemo # frontend
 ```
@@ -71,12 +70,12 @@ gcloud container clusters resize ccsdemo --num-nodes=0
 
 ## Todo
 
-* Home view
 * Ingest CMS backend data
 * Search View
+* Search DB
+* Search API
 * Pins View
-* DB for Pins
-* Api for Pins
-* Frontend for Pins
-* Google for contact feature
+* Pins DB
+* Pins API
+* Lead Stages and Lead Contacts features
 * Enable https (optional)
