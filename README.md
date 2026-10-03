@@ -6,6 +6,18 @@ The project uses CMS data on Hospices to create a simple sales tool to find pote
 
 Search starts by state with ordering by aggregate data on spend and number of patients, then can proceed to hopsices in that state with filtering by description. Once a hopsice is pinned the potential contacts can be explored and used to generate a google search for a contact. Pins allow the user to mark the pipeline state of the lead: Prospect/Contacted/Won/Lost.
 
+## Data
+
+Data is not commited, needs to be downloaded from CMS and put in `data/files`
+
+```
+clj -M:ingest
+=> (loadfile "data/injest.clj")
+=> hospice-enrollments
+| ENROLLMENT ID | ENROLLMENT STATE |
+...
+```
+
 ## Run
 
 ### Setup
@@ -55,6 +67,7 @@ gcloud container clusters resize ccsdemo --num-nodes=0
 
 1h - Frontend Routing  
 1h - Frontend Styling
+1h - Data
 
 ## Todo
 

@@ -1,53 +1,52 @@
 (ns ccsdemo.core
-  (:require [reagent.dom.client   :as rdc]
-            [re-frame.core        :as rfc]
-            [reitit.frontend.easy :as rfe]
-            [reitit.frontend      :as rfr]))
+  (:require [reagent.dom.client   :as reagent]
+            [re-frame.core        :as reframe]
+            [reitit.frontend.easy :as reitit]
+            [reitit.frontend      :refer [router]]))
+
+(def home-text "Welcome to the Hospice Leads Tool.
+Use Search to search and pin leads.
+Track contacts under Pins.")
 
 (defn home []
-  [:p "Welcome to the Hospice Leads Tool"])
+  [:p home-text])
 
 (defn search []
-  [:p "Search hospices by State"])
+  [:p "Search hospices by State."])
 
 (defn pins []
-  [:p "Manage pinned leads"])
+  [:p "Manage pinned leads."])
 
 (def routes
   ["/"
-   [""       {:name ::home   :title "Home"   :view home}]
-   ["search" {:name ::search :title "Search" :view search}]
-   ["pins"   {:name ::pins   :title "Pins"   :view pins}]])
+    [""       {:name ::home   :title "Home"   :view home}]
+    ["search" {:name ::search :title "Search" :view search}]
+    ["pins"   {:name ::pins   :title "Pins"   :view pins}]])
 
 (defn navigate [route]
-  (rfc/dispatch [::navigate route]))
+  (reframe/dispatch [::navigate route]))
 
-(rfc/reg-event-db
-  ::init
-  (fn [_ _]
-    {:route ::home}))
-
-(rfc/reg-event-db
+(reframe/reg-event-db
   ::navigate
   (fn [db [_ route]]
     (assoc db :route route)))
 
-(rfc/reg-sub
+(reframe/reg-sub
   ::route
   (fn [db _]
     (:route db)))
 
-(defonce root (rdc/create-root (.getElementById js/document "app")))
+(defonce root (reagent/create-root (.getElementById js/document "app")))
 
 (defn make-key [obj]
   (hash obj))
 
 (defn make-li-a [route]
-  [:li
-    [:a {:key (make-key route) :href (rfe/href (-> route second :name))} (-> route second :title)]])
+  [:li {:key (make-key route)}
+    [:a {:href (reitit/href (-> route second :name))} (-> route second :title)]])
 
 (defn app []
-  (let [route @(rfc/subscribe [::route])]
+  (let [route @(reframe/subscribe [::route])]
     [:div#root.container-fluid
       [:header
         [:nav
@@ -59,7 +58,5 @@
           [(-> route :data :view)]]]]))
 
 (defn init []
-  (rfc/clear-subscription-cache!)
-  (rfc/dispatch-sync [::init])
-  (rfe/start! (rfr/router routes) navigate {:use-fragement true})
-  (rdc/render root [app]))
+  (reitit/start! (router routes) navigate {:use-fragement true})
+  (reagent/render root [app]))
