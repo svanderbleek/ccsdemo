@@ -66,7 +66,7 @@ gcloud container clusters resize ccsdemo --num-nodes=0
 ## Time Tracking
 
 1h - Frontend Routing  
-1h - Frontend Styling
+1h - Frontend Styling  
 1h - Data
 
 ## Todo
