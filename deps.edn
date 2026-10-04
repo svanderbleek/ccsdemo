@@ -16,8 +16,8 @@
                    reagent/reagent      {:mvn/version "2.0.1"}}}
            :ingest
            {:paths ["data"]
-            :extra-deps {scicloj/tablecloth          {:mvn/version "8.024"}
-                         org.clojure/tools.namespace {:mvn/version "1.5.1"}}}
+            :extra-deps {scicloj/tablecloth                {:mvn/version "8.024"}
+                         org.clojure/tools.namespace       {:mvn/version "1.5.1"}}}
            :run
            {:main-opts ["-m" "ccsdemo.main"]}
            :build
