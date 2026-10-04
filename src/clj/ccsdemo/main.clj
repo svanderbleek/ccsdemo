@@ -1,15 +1,20 @@
 (ns ccsdemo.main
-  (:require [ring.adapter.jetty            :refer [run-jetty]]
-            [ring.middleware.reload        :refer [wrap-reload]]
-            [muuntaja.middleware           :as muuntaja]
-            [reitit.ring                   :as reitit])
+  (:require [ring.adapter.jetty                :refer [run-jetty]]
+            [ring.middleware.reload            :refer [wrap-reload]]
+            [next.jdbc                         :as jdbc]
+            [muuntaja.core                     :as m]
+            [reitit.ring.middleware.muuntaja   :as muuntaja]
+            [reitit.ring.middleware.parameters :as params]
+            [reitit.ring                       :as reitit])
   (:gen-class))
 
+(defonce db (jdbc/get-datasource {:dbtype "postgres" :dbname "ccsdemo"}))
+
 (defn search-handler [_]
-  {:status 300})
+  {:body (jdbc/execute! db ["SELECT * FROM hospice_stats"])})
 
 (defn pins-handler [_]
-  {:status 200})
+  {})
 
 (def routes
   [["/search" {:get search-handler}]
@@ -22,7 +27,11 @@
 
 (def app
   (reitit/ring-handler
-    (reitit/router routes)
+    (reitit/router
+      routes
+      {:data {:muuntaja m/instance
+              :middleware [params/parameters-middleware
+                           muuntaja/format-middleware]}})
     (reitit/routes
       (reitit/create-resource-handler {:path "/"})
       (reitit/create-default-handler))))

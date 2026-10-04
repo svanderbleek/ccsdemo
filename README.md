@@ -63,20 +63,17 @@ gcloud container clusters resize ccsdemo --num-nodes=0
 
 ## Time Tracking
 
-1h - Frontend Routing  
-1h - Frontend Styling  
-4h - Data Ingest  
-1h - Server API routes  
-0h - Server API DB
+01h - Frontend Routing  
+01h - Frontend Styling  
+04h - Data Ingest  
+01h - Server API routes  
+.2h - Server Search
 
 ## Todo
 
-* Server API basic implementation
-* Search View
-* Search DB
-* Search API
-* Pins View
-* Pins DB
-* Pins API
+* Frontend Search
+* DB Pins
+* Server Pins
+* Frontend Pins
 * Lead Stages and Lead Contacts features
 * Enable https (optional)
