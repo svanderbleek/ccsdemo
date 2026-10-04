@@ -68,7 +68,6 @@ gcloud container clusters resize ccsdemo --num-nodes=0
 
 ## Todo
 
-* Ingest CMS backend data
 * Search View
 * Search DB
 * Search API
