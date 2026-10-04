@@ -31,8 +31,9 @@ npm install -g shadow-cljs sass
 ```
 # only need to run once
 sass --load-path=node_modules/@picocss/pico/scss src/scss/ccsdemo.scss resources/public/css/ccsdemo.css
-clj -M:run                # start backend first
-shadow-cljs watch ccsdemo # frontend
+
+clj -M:run:dev            # start backend first, hot reload
+shadow-cljs watch ccsdemo # frontend, hot reload
 ```
 
 go to `localhost:3001/index.html`

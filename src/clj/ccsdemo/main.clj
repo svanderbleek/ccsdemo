@@ -1,11 +1,12 @@
 (ns ccsdemo.main
   (:require [ring.adapter.jetty            :refer [run-jetty]]
+            [ring.middleware.reload        :refer [wrap-reload]]
             [muuntaja.middleware           :as muuntaja]
             [reitit.ring                   :as reitit])
   (:gen-class))
 
 (defn search-handler [_]
-  {:status 200})
+  {:status 300})
 
 (defn pins-handler [_]
   {:status 200})
@@ -26,5 +27,7 @@
       (reitit/create-resource-handler {:path "/"})
       (reitit/create-default-handler))))
 
+(def dev-app (wrap-reload #'app {:dirs ["src/clj"]}))
+
 (defn -main []
-  (run-jetty app {:port 3001 :join? false}))
+  (run-jetty #'dev-app {:port 3001 :join? false}))
