@@ -1,4 +1,5 @@
 (ns user
-  (:require [tablecloth.api               :as tc]
-            [ingest                       :as di]
-            [clojure.tools.namespace.repl :as ct]))
+  (:require [ingest                       :as i]
+            [tablecloth.api               :as t]
+            [honey.sql.helpers            :as h]
+            [clojure.tools.namespace.repl :as c]))

@@ -8,12 +8,12 @@ Search starts by state with ordering by aggregate data on spend and number of pa
 
 ## Data
 
-Data is not commited, needs to be downloaded from CMS and put in `data/files`. Due to complexity of `.xslx` multi-page format a `.csv` needs to be made from the relevant page. This can be done in Google Sheets.
+Data is not commited, needs to be downloaded from CMS and put in `data/files`. Due to complexity of `.xslx` multi-page format a `.csv` needs to be made from the relevant page. This can be done in Google Sheets. See comments at end of `ingest.clj` to manage ingestion.
 
 ```
 clj -M:ingest
-=> (di/fn, tc/fn) # Use ingest.clj and tablecloth to inspect data
-=> (ct/refresh)   # Load file changes for interactive development
+=> (i/ t/ h/)  # Use ingest.clj, tablecloth, and honey
+=> (c/refresh) # Load file changes for interactive development
 ```
 
 ## Run

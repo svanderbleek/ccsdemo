@@ -85,28 +85,18 @@
 (defn make-table! [data-map]
   (jdbc/execute! db (make-table data-map)))
 
-(defn make-tables! []
-  (run! make-table! data-maps))
-
 (defn insert-table! [inserts]
   (run! (partial jdbc/execute! db) inserts))
 
-(defn insert-tables! []
-  (insert-table! [insert-table-all (first data-maps)])
-  (insert-table! (insert-table-chunks (second data-maps) 100))
-  (insert-table! (insert-table-chunks (last data-maps) 1000)))
-
 (comment
   ;; make all tables
-  (make-tables!)
+  (run! make-table! data-maps)
   ;; make hospice_stats table
   (make-table! (first data-maps))
   ;; make hospice_enrolls table
   (make-table! (second data-maps))
   ;; make hospice_owners table
   (make-table! (last data-maps))
-  ;; insert all tables - Dangerous for last table with no primary key
-  (insert-tables!)
   ;; insert hospice_stats data
   (insert-table! [insert-table-all (first data-maps)])
   ;; insert hospice_enrolls data
