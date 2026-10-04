@@ -64,10 +64,13 @@ gcloud container clusters resize ccsdemo --num-nodes=0
 
 1h - Frontend Routing  
 1h - Frontend Styling  
-4h - Data Ingest
+4h - Data Ingest  
+1h - Server API routes  
+0h - Server API DB
 
 ## Todo
 
+* Server API basic implementation
 * Search View
 * Search DB
 * Search API
