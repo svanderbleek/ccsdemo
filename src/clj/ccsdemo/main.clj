@@ -19,34 +19,43 @@
    "enroll" {:redirect "pins"
              :query ["INSERT INTO hospice_pins (enroll) VALUES (?) ON CONFLICT DO NOTHING"]}})
 
+(def pins
+  "SELECT p.enroll, e.org_name FROM hospice_pins p INNER JOIN hospice_enrolls e ON p.enroll = e.enroll")
+
+(def pins-api
+  {nil      {:cols ["org_name"]
+             :param "enroll"
+             :query [pins]}
+   "enroll" {:cols ["title" "role" "first" "middle" "last"]
+             :query ["SELECT * FROM hospice_owners WHERE type = 'I' AND enroll = ? LIMIT 100"]}})
+
 (defonce db (jdbc/get-datasource {:dbtype "postgres" :dbname "ccsdemo"}))
 
 (defn db-query [query]
   (jdbc/execute! db query {:builder-fn rs/as-unqualified-maps}))
 
-(defn search-query [param params query]
+(defn api-query [param params query]
   (if param
     (db-query (conj query (get params param)))
     (db-query query)))
 
-(defn search-body [params]
+(defn api-body [api params]
+  (println api)
+  (println params)
   (let [param (ffirst params)
-        body (get search-api param)]
+        body (get api param)]
     (->
       body
-      (assoc :rows (search-query param params (:query body)))
+      (assoc :rows (api-query param params (:query body)))
       (dissoc :query))))
 
-(defn search-handler [req]
-  {:body (search-body (:query-params req))})
-
-(defn pins-handler [_]
-  {:body {:cols ["enroll"]
-          :rows (db-query ["SELECT * FROM hospice_pins"])}})
+(defn api-handler [api]
+  (fn [req]
+    {:body (api-body api (:query-params req))}))
 
 (def routes
-  [["/search" {:get search-handler}]
-   ["/pins"   {:get pins-handler}]])
+  [["/search" {:get (api-handler search-api)}]
+   ["/pins"   {:get (api-handler pins-api)}]])
 
 (def router (reitit/router routes))
 

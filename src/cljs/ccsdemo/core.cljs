@@ -10,12 +10,12 @@
 (defn make-seq-el [el obj]
   [el {:key (make-key obj)} obj])
 
-(defn data-row [param cols row]
+(defn data-row [base param cols row]
   [:tr.clickable {:key (make-key row)
-                  :on-click #(rf/dispatch [::load "/search" {param (aget row param)}])}
+                  :on-click #(rf/dispatch [::load base {param (aget row param)}])}
     (map (fn [col] (make-seq-el :td (aget row col))) cols)])
 
-(defn data-table [^js data]
+(defn data-table [base ^js data]
   (let [cols (.-cols data)
         rows (.-rows data)
         param (.-param data)]
@@ -23,7 +23,7 @@
       [:thead
         [:tr (map (fn [col] (make-seq-el :th col)) cols)]]
       [:tbody
-        (map (partial data-row param cols) rows)]]))
+        (map (partial data-row base param cols) rows)]]))
 
 (rf/reg-sub
   ::data
@@ -35,7 +35,7 @@
     [:div
       [:p "Search hospices by State."]
       [:button {:on-click #(rf/dispatch [::load "/search"])} "Start"]
-      (if data (data-table data) [:p "Empty"])]))
+      (if data (data-table "/search" data) [:p "Ready"])]))
 
 (rf/reg-fx
   ::fetch
@@ -69,8 +69,8 @@
               :on-data ::data}}))
 
 (def home-text "Welcome to the Hospice Leads Tool.
-Use Search to search and pin leads.
-Track contacts under Pins.")
+Use Search to search and pin potential leads.
+Explore lead contacts under Pins.")
 
 (defn home []
   [:p home-text])
@@ -78,9 +78,9 @@ Track contacts under Pins.")
 (defn pins []
   (let [data @(rf/subscribe [::data])]
     [:div
-      [:p "Manage pinned leads."]
+      [:p "Explore pinned leads."]
       [:button {:on-click #(rf/dispatch [::load "/pins"])} "Start"]
-      (if data (data-table data) [:p "Empty"])]))
+      (if data (data-table "/pins" data) [:p "Ready"])]))
 
 (def routes
   ["/"
@@ -94,7 +94,7 @@ Track contacts under Pins.")
 (rf/reg-event-db
   ::navigate
   (fn [db [_ route]]
-    (assoc db :route route)))
+    (assoc (dissoc db :data) :route route)))
 
 (rf/reg-event-fx
   ::navigate!

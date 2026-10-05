@@ -68,13 +68,10 @@ gcloud container clusters resize ccsdemo --num-nodes=0
 04h - Data Ingest  
 01h - Server API routes  
 01h - Server Search  
-01h - Search View
+01h - Search View  
+02h - Generalizing API and Views  
+01h - Pins API and View
 
 ## Todo
 
-* Frontend Search
-* DB Pins
-* Server Pins
-* Frontend Pins
-* Lead Stages and Lead Contacts features
-* Enable https (optional)
+* Google for contact from final pins view
