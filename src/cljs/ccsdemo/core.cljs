@@ -118,7 +118,7 @@ Explore lead contacts under Pins.")
     [:div#root.container-fluid
       [:header
         [:nav
-          [:ul [:li [:strong "Hospice Leads Tool"]]]
+          [:ul [:li [:a.unset {:href "/index.html"} [:strong "Hospice Leads Tool"]]]]
           [:ul (map make-li-a (rest routes))]]]
       [:main
         [:section

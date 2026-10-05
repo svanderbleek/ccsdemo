@@ -29,7 +29,7 @@ npm install -g shadow-cljs sass
 ### Dev
 
 ```
-# only need to run once
+# only need to run once, rm resources/public/css/cssdemo.css if need to regen
 sass --load-path=node_modules/@picocss/pico/scss src/scss/ccsdemo.scss resources/public/css/ccsdemo.css
 
 clj -M:run:dev            # start backend first, hot reload
@@ -71,6 +71,7 @@ gcloud container clusters resize ccsdemo --num-nodes=0
 01h - Search View  
 02h - Generalizing API and Views  
 01h - Pins API and View
+01h - Cleanup Code
 
 ## Todo
 

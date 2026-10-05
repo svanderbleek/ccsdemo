@@ -7,3 +7,11 @@ tr.clickable:hover td {
   cursor: pointer;
   background-color: #79c0ff !important;
 }
+
+a.unset {
+  all: unset !important;
+}
+
+a.unset:hover {
+  cursor: pointer !important;
+}
