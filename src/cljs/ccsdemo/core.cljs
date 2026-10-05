@@ -5,13 +5,13 @@
             [reitit.frontend      :refer [router]]
             [ccsdemo.events]
             [ccsdemo.subs]
-            [ccsdemo.views        :as viw]))
+            [ccsdemo.views        :as vw]))
+
+(defonce root (rd/create-root (.getElementById js/document "app")))
 
 (defn navigate [route]
   (rf/dispatch [:navigate route]))
 
-(defonce root (rd/create-root (.getElementById js/document "app")))
-
 (defn init []
-  (rfe/start! (router viw/routes) navigate {:use-fragement true})
-  (rd/render root [viw/app]))
+  (rfe/start! (router vw/routes) navigate {:use-fragement true})
+  (rd/render root [vw/app]))

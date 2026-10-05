@@ -2,16 +2,19 @@
   (:require [re-frame.core        :as rf]
             [reitit.frontend.easy :as rfe]))
 
-(defn make-key [obj]
-  (hash obj))
+(defn react-key [obj]
+  {:key (hash obj)})
 
-(defn make-seq-el [el obj]
-  [el {:key (make-key obj)} obj])
+(defn react-seq [el obj]
+  [el (react-key obj) obj])
+
+(defn click-row [base param row]
+  {:on-click (fn [] (rf/dispatch [:load base {param (aget row param)}]))})
 
 (defn data-row [base param cols row]
-  [:tr.clickable {:key (make-key row)
-                  :on-click #(rf/dispatch [:load base {param (aget row param)}])}
-    (map (fn [col] (make-seq-el :td (aget row col))) cols)])
+  [:tr.clickable
+    (merge (react-key row) (click-row base param row))
+    (map (fn [col] (react-seq :td (aget row col))) cols)])
 
 (defn data-table [base ^js data]
   (let [cols (.-cols data)
@@ -19,11 +22,18 @@
         param (.-param data)]
     [:table.striped
       [:thead
-        [:tr (map (fn [col] (make-seq-el :th col)) cols)]]
+        [:tr (map (fn [col] (react-seq :th col)) cols)]]
       [:tbody
         (map (partial data-row base param cols) rows)]]))
 
-(def home-text "Welcome to the Hospice Leads Tool.
+(defn api-view [desc base]
+  (let [data @(rf/subscribe [:data])]
+    [:div
+      [:p "Search hospices by State."]
+      [:button {:on-click #(rf/dispatch [:load "/search"])} "Start"]
+      (if data (data-table "/search" data) [:p])]))
+
+(def ^:const home-text "Welcome to the Hospice Leads Tool.
 Use Search to search and pin potential leads.
 Explore lead contacts under Pins.")
 
@@ -31,21 +41,13 @@ Explore lead contacts under Pins.")
   [:p home-text])
 
 (defn search []
-  (let [data @(rf/subscribe [:data])]
-    [:div
-      [:p "Search hospices by State."]
-      [:button {:on-click #(rf/dispatch [:load "/search"])} "Start"]
-      (if data (data-table "/search" data) [:p])]))
+  (api-view "Search hospices by State." "/search"))
 
 (defn pins []
-  (let [data @(rf/subscribe [:data])]
-    [:div
-      [:p "Explore pinned leads."]
-      [:button {:on-click #(rf/dispatch [:load "/pins"])} "Start"]
-      (if data (data-table "/pins" data) [:p])]))
+  (api-view "Explore pinned leads." "/pins"))
 
-(defn make-li-a [route]
-  [:li {:key (make-key route)}
+(defn link-route [route]
+  [:li (react-key route)
     [:a {:href (rfe/href (-> route second :name))} (-> route second :title)]])
 
 (def routes
@@ -60,7 +62,7 @@ Explore lead contacts under Pins.")
       [:header
         [:nav
           [:ul [:li [:a.unset {:href "/index.html"} [:strong "Hospice Leads Tool"]]]]
-          [:ul (map make-li-a (rest routes))]]]
+          [:ul (map link-route (rest routes))]]]
       [:main
         [:section
           [:h1 (-> route :data :title)]

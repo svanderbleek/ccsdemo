@@ -30,10 +30,10 @@
          :db (dissoc db :data)}
         {:db (assoc db :data data)}))))
 
-(defn get-params [params]
+(defn- get-params [params]
   (js/URLSearchParams. (clj->js params)))
 
-(defn get-url [base params]
+(defn- get-url [base params]
   (if params
     (str base "?" (get-params params))
     base))
