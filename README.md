@@ -75,3 +75,4 @@ gcloud container clusters resize ccsdemo --num-nodes=0
 ## Todo
 
 * Google for contact from final pins view
+* Cleanup code

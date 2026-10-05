@@ -40,8 +40,6 @@
     (db-query query)))
 
 (defn api-body [api params]
-  (println api)
-  (println params)
   (let [param (ffirst params)
         body (get api param)]
     (->
