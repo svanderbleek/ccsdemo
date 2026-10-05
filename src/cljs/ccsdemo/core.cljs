@@ -1,7 +1,7 @@
 (ns ccsdemo.core
   (:require [reagent.dom.client   :as reagent]
             [re-frame.core        :as rf]
-            [reitit.frontend.easy :as reitit]
+            [reitit.frontend.easy :as rfe]
             [reitit.frontend      :refer [router]]))
 
 (defn make-key [obj]
@@ -10,12 +10,12 @@
 (defn make-seq-el [el obj]
   [el {:key (make-key obj)} obj])
 
-(defn search-row [param cols row]
+(defn data-row [param cols row]
   [:tr.clickable {:key (make-key row)
-                  :on-click #(rf/dispatch [::search-load {param (aget row param)}])}
+                  :on-click #(rf/dispatch [::load "/search" {param (aget row param)}])}
     (map (fn [col] (make-seq-el :td (aget row col))) cols)])
 
-(defn search-table [^js data]
+(defn data-table [^js data]
   (let [cols (.-cols data)
         rows (.-rows data)
         param (.-param data)]
@@ -23,19 +23,19 @@
       [:thead
         [:tr (map (fn [col] (make-seq-el :th col)) cols)]]
       [:tbody
-        (map (partial search-row param cols) rows)]]))
+        (map (partial data-row param cols) rows)]]))
 
 (rf/reg-sub
-  ::search-data
+  ::data
   (fn [db _]
-    (:search-data db)))
+    (:data db)))
 
 (defn search []
-  (let [data @(rf/subscribe [::search-data])]
+  (let [data @(rf/subscribe [::data])]
     [:div
       [:p "Search hospices by State."]
-      [:button {:on-click #(rf/dispatch [::search-load])} "Start"]
-      (if data (search-table data) [:p "Empty"])]))
+      [:button {:on-click #(rf/dispatch [::load "/search"])} "Start"]
+      (if data (data-table data) [:p "Empty"])]))
 
 (rf/reg-fx
   ::fetch
@@ -45,10 +45,14 @@
       (.then (fn [resp] (.json resp)))
       (.then (fn [data] (rf/dispatch [(:on-data req) data]))))))
 
-(rf/reg-event-db
-  ::search-data
-  (fn [db [_ data]]
-    (assoc db :search-data data)))
+(rf/reg-event-fx
+  ::data
+  (fn [{:keys [db]} [_ data]]
+    (let [redirect (.-redirect data)]
+      (if redirect
+        {:dispatch [::navigate! (keyword "ccsdemo.core" redirect)]
+         :db (dissoc db :data)}
+        {:db (assoc db :data data)}))))
 
 (defn get-params [params]
   (js/URLSearchParams. (clj->js params)))
@@ -59,10 +63,10 @@
     base))
 
 (rf/reg-event-fx
-  ::search-load
-  (fn [_ [_ params]]
-    {::fetch {:url (get-url "/search" params)
-              :on-data ::search-data}}))
+  ::load
+  (fn [_ [_ base params]]
+    {::fetch {:url (get-url base params)
+              :on-data ::data}}))
 
 (def home-text "Welcome to the Hospice Leads Tool.
 Use Search to search and pin leads.
@@ -72,7 +76,11 @@ Track contacts under Pins.")
   [:p home-text])
 
 (defn pins []
-  [:p "Manage pinned leads."])
+  (let [data @(rf/subscribe [::data])]
+    [:div
+      [:p "Manage pinned leads."]
+      [:button {:on-click #(rf/dispatch [::load "/pins"])} "Start"]
+      (if data (data-table data) [:p "Empty"])]))
 
 (def routes
   ["/"
@@ -88,6 +96,12 @@ Track contacts under Pins.")
   (fn [db [_ route]]
     (assoc db :route route)))
 
+(rf/reg-event-fx
+  ::navigate!
+  (fn [_ [_ route params query]]
+    (rfe/push-state route params query)
+    {}))
+
 (rf/reg-sub
   ::route
   (fn [db _]
@@ -97,7 +111,7 @@ Track contacts under Pins.")
 
 (defn make-li-a [route]
   [:li {:key (make-key route)}
-    [:a {:href (reitit/href (-> route second :name))} (-> route second :title)]])
+    [:a {:href (rfe/href (-> route second :name))} (-> route second :title)]])
 
 (defn app []
   (let [route @(rf/subscribe [::route])]
@@ -112,5 +126,5 @@ Track contacts under Pins.")
           [(-> route :data :view)]]]]))
 
 (defn init []
-  (reitit/start! (router routes) navigate {:use-fragement true})
+  (rfe/start! (router routes) navigate {:use-fragement true})
   (reagent/render root [app]))
