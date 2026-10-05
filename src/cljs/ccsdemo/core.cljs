@@ -1,8 +1,27 @@
 (ns ccsdemo.core
   (:require [reagent.dom.client   :as reagent]
             [re-frame.core        :as reframe]
+            [goog.object          :as gobj]
             [reitit.frontend.easy :as reitit]
             [reitit.frontend      :refer [router]]))
+
+(defn search-row [row]
+  [:tr
+    [:th (gobj/get row "hospice_stats/state")]
+    [:th (gobj/get row "hospice_stats/payout")]
+    [:th (gobj/get row "hospice_stats/persons")]
+    [:th (gobj/get row "hospice_stats/days")]])
+
+(defn search-table [data]
+  [:table.striped
+    [:thead
+      [:tr
+      [:th "State"]
+      [:th "Payout"]
+      [:th "Patients"]
+      [:th "Covered Days"]]]
+    [:tbody
+      (map search-row data)]])
 
 (reframe/reg-sub
   ::search-data
@@ -12,9 +31,9 @@
 (defn search []
   (let [data @(reframe/subscribe [::search-data])]
     [:div
-     [:p "Search hospices by State."]
-     [:button {:on-click #(reframe/dispatch [::search-load])}]
-     [:div (or data "Empty")]]))
+      [:p "Search hospices by State."]
+      [:button {:on-click #(reframe/dispatch [::search-load])} "Start"]
+      (if data (search-table data) [:p "Empty"])]))
 
 (reframe/reg-fx
   :fetch
@@ -22,7 +41,7 @@
     (->
       (js/fetch (:url req))
       (.then (fn [resp] (.json resp)))
-      (.then (fn [data] (reframe/dispatch [::search-data (js/JSON.stringify data)]))))))
+      (.then (fn [data] (reframe/dispatch [::search-data data]))))))
 
 (reframe/reg-event-db
   ::search-data
