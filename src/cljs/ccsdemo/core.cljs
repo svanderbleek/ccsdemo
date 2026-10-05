@@ -8,23 +8,19 @@
 (defn make-key [obj]
   (hash obj))
 
-(defn search-row [row]
-  [:tr {:key (make-key row)}
-    [:th (gobj/get row "hospice_stats/state")]
-    [:th (gobj/get row "hospice_stats/payout")]
-    [:th (gobj/get row "hospice_stats/persons")]
-    [:th (gobj/get row "hospice_stats/days")]])
+(defn make-seq-el [el obj]
+  [el {:key (make-key obj)} obj])
 
-(defn search-table [data]
+(defn search-row [cols row]
+  [:tr {:key (make-key row)}
+    (map (fn [col] (make-seq-el :td (gobj/get row col))) cols)])
+
+(defn search-table [cols rows]
   [:table.striped
     [:thead
-      [:tr
-      [:th "State"]
-      [:th "Payout"]
-      [:th "Patients"]
-      [:th "Covered Days"]]]
+      [:tr (map (fn [col] (make-seq-el :th col)) cols)]]
     [:tbody
-      (map search-row data)]])
+      (map (partial search-row cols) rows)]])
 
 (reframe/reg-sub
   ::search-data
@@ -35,8 +31,8 @@
   (let [data @(reframe/subscribe [::search-data])]
     [:div
       [:p "Search hospices by State."]
-      [:button {:on-click #(reframe/dispatch [::search-load {"state" "AZ"}])} "Start"]
-      (if data (search-table data) [:p "Empty"])]))
+      [:button {:on-click #(reframe/dispatch [::search-load])} "Start"]
+      (if data (search-table (.-cols data) (.-rows data)) [:p "Empty"])]))
 
 (reframe/reg-fx
   :fetch
@@ -51,14 +47,18 @@
   (fn [db [_ data]]
     (assoc db :search-data data)))
 
-(defn search-url [params]
-  (let [url-params (js/URLSearchParams. (clj->js params))]
-    (str "/search?" url-params)))
+(defn get-params [params]
+  (js/URLSearchParams. (clj->js params)))
+
+(defn get-url [base params]
+  (if params
+    (str base "?" (get-params params))
+    base))
 
 (reframe/reg-event-fx
   ::search-load
   (fn [_ [_ params]]
-    {:fetch {:url (search-url params)}}))
+    {:fetch {:url (get-url "/search" params)}}))
 
 (def home-text "Welcome to the Hospice Leads Tool.
 Use Search to search and pin leads.

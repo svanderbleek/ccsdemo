@@ -12,7 +12,12 @@
 
 (defn search-handler [req]
   (println (:query-params req))
-  {:body (jdbc/execute! db ["SELECT * FROM hospice_stats"])})
+  {:body {:cols ["hospice_stats/state"
+                 "hospice_stats/payout"
+                 "hospice_stats/persons"
+                 "hospice_stats/days"]
+          :param "state"
+          :rows (jdbc/execute! db ["SELECT * FROM hospice_stats"])}})
 
 (defn pins-handler [_]
   {})
