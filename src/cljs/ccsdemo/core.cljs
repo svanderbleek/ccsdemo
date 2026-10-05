@@ -1,7 +1,6 @@
 (ns ccsdemo.core
   (:require [reagent.dom.client   :as reagent]
-            [re-frame.core        :as reframe]
-            [goog.object          :as gobj]
+            [re-frame.core        :as rf]
             [reitit.frontend.easy :as reitit]
             [reitit.frontend      :refer [router]]))
 
@@ -11,38 +10,42 @@
 (defn make-seq-el [el obj]
   [el {:key (make-key obj)} obj])
 
-(defn search-row [cols row]
-  [:tr {:key (make-key row)}
-    (map (fn [col] (make-seq-el :td (gobj/get row col))) cols)])
+(defn search-row [param cols row]
+  [:tr.clickable {:key (make-key row)
+                  :on-click #(rf/dispatch [::search-load {param (aget row param)}])}
+    (map (fn [col] (make-seq-el :td (aget row col))) cols)])
 
-(defn search-table [cols rows]
-  [:table.striped
-    [:thead
-      [:tr (map (fn [col] (make-seq-el :th col)) cols)]]
-    [:tbody
-      (map (partial search-row cols) rows)]])
+(defn search-table [^js data]
+  (let [cols (.-cols data)
+        rows (.-rows data)
+        param (.-param data)]
+    [:table.striped
+      [:thead
+        [:tr (map (fn [col] (make-seq-el :th col)) cols)]]
+      [:tbody
+        (map (partial search-row param cols) rows)]]))
 
-(reframe/reg-sub
+(rf/reg-sub
   ::search-data
   (fn [db _]
     (:search-data db)))
 
 (defn search []
-  (let [data @(reframe/subscribe [::search-data])]
+  (let [data @(rf/subscribe [::search-data])]
     [:div
       [:p "Search hospices by State."]
-      [:button {:on-click #(reframe/dispatch [::search-load])} "Start"]
-      (if data (search-table (.-cols data) (.-rows data)) [:p "Empty"])]))
+      [:button {:on-click #(rf/dispatch [::search-load])} "Start"]
+      (if data (search-table data) [:p "Empty"])]))
 
-(reframe/reg-fx
-  :fetch
+(rf/reg-fx
+  ::fetch
   (fn [req]
     (->
       (js/fetch (:url req))
       (.then (fn [resp] (.json resp)))
-      (.then (fn [data] (reframe/dispatch [::search-data data]))))))
+      (.then (fn [data] (rf/dispatch [(:on-data req) data]))))))
 
-(reframe/reg-event-db
+(rf/reg-event-db
   ::search-data
   (fn [db [_ data]]
     (assoc db :search-data data)))
@@ -55,10 +58,11 @@
     (str base "?" (get-params params))
     base))
 
-(reframe/reg-event-fx
+(rf/reg-event-fx
   ::search-load
   (fn [_ [_ params]]
-    {:fetch {:url (get-url "/search" params)}}))
+    {::fetch {:url (get-url "/search" params)
+              :on-data ::search-data}}))
 
 (def home-text "Welcome to the Hospice Leads Tool.
 Use Search to search and pin leads.
@@ -77,14 +81,14 @@ Track contacts under Pins.")
     ["pins"   {:name ::pins   :title "Pins"   :view pins}]])
 
 (defn navigate [route]
-  (reframe/dispatch [::navigate route]))
+  (rf/dispatch [::navigate route]))
 
-(reframe/reg-event-db
+(rf/reg-event-db
   ::navigate
   (fn [db [_ route]]
     (assoc db :route route)))
 
-(reframe/reg-sub
+(rf/reg-sub
   ::route
   (fn [db _]
     (:route db)))
@@ -96,7 +100,7 @@ Track contacts under Pins.")
     [:a {:href (reitit/href (-> route second :name))} (-> route second :title)]])
 
 (defn app []
-  (let [route @(reframe/subscribe [::route])]
+  (let [route @(rf/subscribe [::route])]
     [:div#root.container-fluid
       [:header
         [:nav

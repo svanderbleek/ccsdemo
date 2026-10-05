@@ -2,22 +2,43 @@
   (:require [ring.adapter.jetty                :refer [run-jetty]]
             [ring.middleware.reload            :refer [wrap-reload]]
             [next.jdbc                         :as jdbc]
+            [next.jdbc.result-set              :as rs]
             [muuntaja.core                     :as m]
             [reitit.ring.middleware.muuntaja   :as muuntaja]
             [reitit.ring.middleware.parameters :as params]
             [reitit.ring                       :as reitit])
   (:gen-class))
 
+(def search-api
+  {nil      {:cols ["state" "payout" "persons" "days"]
+             :param "state"
+             :query ["SELECT * FROM hospice_stats"]}
+   "state"  {:cols ["org_name" "org_type" "provider" "nonprofit"]
+             :param "pin"
+             :query ["SELECT * FROM hospice_enrolls WHERE state = ? LIMIT 100"]}
+   "pin"    {:redirect "pins"
+             :query ["INSERT INTO hospice_pins (enroll) VALUES (?) ON CONFLICT DO NOTHING"]}})
+
 (defonce db (jdbc/get-datasource {:dbtype "postgres" :dbname "ccsdemo"}))
 
+(defn db-query [query]
+  (jdbc/execute! db query {:builder-fn rs/as-unqualified-maps}))
+
+(defn search-query [param params query]
+  (if param
+    (db-query (conj query (get params param)))
+    (db-query query)))
+
+(defn search-body [params]
+  (let [param (ffirst params)
+        body (get search-api param)]
+    (->
+      body
+      (assoc :rows (search-query param params (:query body)))
+      (dissoc :query))))
+
 (defn search-handler [req]
-  (println (:query-params req))
-  {:body {:cols ["hospice_stats/state"
-                 "hospice_stats/payout"
-                 "hospice_stats/persons"
-                 "hospice_stats/days"]
-          :param "state"
-          :rows (jdbc/execute! db ["SELECT * FROM hospice_stats"])}})
+  {:body (search-body (:query-params req))})
 
 (defn pins-handler [_]
   {})

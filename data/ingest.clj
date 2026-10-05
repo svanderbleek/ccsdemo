@@ -88,6 +88,9 @@
 (defn insert-table! [inserts]
   (run! (partial jdbc/execute! db) inserts))
 
+(defn exec! [statement]
+  (jdbc/execute! db statement))
+
 (comment
   ;; make all tables
   (run! make-table! data-maps)

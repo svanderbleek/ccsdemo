@@ -2,3 +2,8 @@
   $semantic-root-element: "#root",
   $enable-semantic-container: true
 );
+
+tr.clickable:hover td {
+  cursor: pointer;
+  background-color: #79c0ff !important;
+}
