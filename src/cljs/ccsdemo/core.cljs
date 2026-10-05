@@ -5,8 +5,11 @@
             [reitit.frontend.easy :as reitit]
             [reitit.frontend      :refer [router]]))
 
+(defn make-key [obj]
+  (hash obj))
+
 (defn search-row [row]
-  [:tr
+  [:tr {:key (make-key row)}
     [:th (gobj/get row "hospice_stats/state")]
     [:th (gobj/get row "hospice_stats/payout")]
     [:th (gobj/get row "hospice_stats/persons")]
@@ -32,7 +35,7 @@
   (let [data @(reframe/subscribe [::search-data])]
     [:div
       [:p "Search hospices by State."]
-      [:button {:on-click #(reframe/dispatch [::search-load])} "Start"]
+      [:button {:on-click #(reframe/dispatch [::search-load {"state" "AZ"}])} "Start"]
       (if data (search-table data) [:p "Empty"])]))
 
 (reframe/reg-fx
@@ -48,10 +51,14 @@
   (fn [db [_ data]]
     (assoc db :search-data data)))
 
+(defn search-url [params]
+  (let [url-params (js/URLSearchParams. (clj->js params))]
+    (str "/search?" url-params)))
+
 (reframe/reg-event-fx
   ::search-load
-  (fn [_ _]
-    {:fetch {:url "/search"}}))
+  (fn [_ [_ params]]
+    {:fetch {:url (search-url params)}}))
 
 (def home-text "Welcome to the Hospice Leads Tool.
 Use Search to search and pin leads.
@@ -83,9 +90,6 @@ Track contacts under Pins.")
     (:route db)))
 
 (defonce root (reagent/create-root (.getElementById js/document "app")))
-
-(defn make-key [obj]
-  (hash obj))
 
 (defn make-li-a [route]
   [:li {:key (make-key route)}

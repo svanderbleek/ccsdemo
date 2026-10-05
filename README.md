@@ -67,7 +67,8 @@ gcloud container clusters resize ccsdemo --num-nodes=0
 01h - Frontend Styling  
 04h - Data Ingest  
 01h - Server API routes  
-.2h - Server Search
+.3h - Server Search  
+.5h - Search View
 
 ## Todo
 

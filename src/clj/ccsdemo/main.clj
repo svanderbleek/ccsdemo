@@ -10,7 +10,8 @@
 
 (defonce db (jdbc/get-datasource {:dbtype "postgres" :dbname "ccsdemo"}))
 
-(defn search-handler [_]
+(defn search-handler [req]
+  (println (:query-params req))
   {:body (jdbc/execute! db ["SELECT * FROM hospice_stats"])})
 
 (defn pins-handler [_]
