@@ -15,7 +15,7 @@
              :query ["SELECT * FROM hospice_stats"]}
    "state"  {:cols ["org_name" "org_type" "provider" "nonprofit"]
              :param "enroll"
-             :query ["SELECT * FROM hospice_enrolls WHERE state = ? LIMIT 100"]}
+             :query ["SELECT * FROM hospice_enrolls WHERE state = ?"]}
    "enroll" {:redirect "pins"
              :query ["INSERT INTO hospice_pins (enroll) VALUES (?) ON CONFLICT DO NOTHING"]}})
 
@@ -27,7 +27,7 @@
              :param "enroll"
              :query [pins]}
    "enroll" {:cols ["title" "role" "first" "middle" "last"]
-             :query ["SELECT * FROM hospice_owners WHERE type = 'I' AND enroll = ? LIMIT 100"]}})
+             :query ["SELECT * FROM hospice_owners WHERE type = 'I' AND enroll = ?"]}})
 
 (defonce db (jdbc/get-datasource {:dbtype "postgres" :dbname "ccsdemo"}))
 

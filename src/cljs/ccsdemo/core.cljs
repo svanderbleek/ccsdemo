@@ -35,7 +35,7 @@
     [:div
       [:p "Search hospices by State."]
       [:button {:on-click #(rf/dispatch [::load "/search"])} "Start"]
-      (if data (data-table "/search" data) [:p "Ready"])]))
+      (if data (data-table "/search" data) [:p])]))
 
 (rf/reg-fx
   ::fetch
@@ -80,7 +80,7 @@ Explore lead contacts under Pins.")
     [:div
       [:p "Explore pinned leads."]
       [:button {:on-click #(rf/dispatch [::load "/pins"])} "Start"]
-      (if data (data-table "/pins" data) [:p "Ready"])]))
+      (if data (data-table "/pins" data) [:p])]))
 
 (def routes
   ["/"
