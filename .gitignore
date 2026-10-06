@@ -6,3 +6,4 @@ node_modules/
 .shadow-cljs/
 .cpcache/
 .DS_STORE
+.claude
