@@ -29,9 +29,9 @@
 (defn api-view [desc base]
   (let [data @(rf/subscribe [:data])]
     [:div
-      [:p "Search hospices by State."]
-      [:button {:on-click #(rf/dispatch [:load "/search"])} "Start"]
-      (if data (data-table "/search" data) [:p])]))
+      [:p desc]
+      [:button {:on-click #(rf/dispatch [:load base])} "Start"]
+      (if data (data-table base data) [:p])]))
 
 (def ^:const home-text "Welcome to the Hospice Leads Tool.
 Use Search to search and pin potential leads.
