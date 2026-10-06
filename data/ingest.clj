@@ -104,5 +104,5 @@
   (insert-table! [insert-table-all (first data-maps)])
   ;; insert hospice_enrolls data
   (insert-table! (insert-table-chunks (second data-maps) 100))
-  ;; insert hospice_owners data - Dangerous, no primary key
+  ;; insert hospice_owners data - Dangerous, no primary key so delete rows first
   (insert-table! (insert-table-chunks (last data-maps) 1000)))

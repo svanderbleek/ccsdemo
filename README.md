@@ -26,6 +26,17 @@ Need some npm binaries to build
 npm install -g shadow-cljs sass
 ```
 
+### DB
+
+Using psql some tables need to be setup to work with the API
+
+```
+psql
+=# \c ccsdemo
+=# CREATE TABLE hospice_pins (enroll CHAR(15) NOT NULL PRIMARY_KEY);
+=# ALTER TABLE hospice_owners ADD COLUMN owner INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY;
+```
+
 ### Dev
 
 ```
