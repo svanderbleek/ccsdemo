@@ -8,6 +8,12 @@ tr.clickable:hover td {
   background-color: #79c0ff !important;
 }
 
+th.sortable:hover {
+  cursor: pointer;
+  user-select: none;
+  background-color: #79c0ff;
+}
+
 a.unset {
   all: unset !important;
 }
