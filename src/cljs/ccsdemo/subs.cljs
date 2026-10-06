@@ -12,11 +12,6 @@
     (:route db)))
 
 (rf/reg-sub
-  :first-table?
-  (fn [db _]
-    (nil? (:params db))))
-
-(rf/reg-sub
   :sort
   (fn [db _]
     (:sort db)))

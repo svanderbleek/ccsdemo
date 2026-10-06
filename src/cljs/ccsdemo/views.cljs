@@ -36,24 +36,24 @@
     (sort-by #(aget % col) (if asc? compare #(compare %2 %1)) rows)
     rows))
 
-(defn data-table [base ^js data sortable?]
+(defn data-table [base ^js data]
   (let [cols (.-cols data)
+        param (.-param data)
+        sortable? (= param "state")
         sorting (when sortable? @(rf/subscribe [:sort]))
-        rows (sort-rows sorting (.-rows data))
-        param (.-param data)]
+        rows (sort-rows sorting (.-rows data))]
     [:table.striped
       [:thead
         [:tr (map (if sortable? (partial sort-header sorting) (partial react-seq :th)) cols)]]
       [:tbody
         (map (partial data-row base param cols) rows)]]))
 
-(defn api-view [desc base & {:keys [sort-first?]}]
-  (let [data @(rf/subscribe [:data])
-        sortable? (and sort-first? @(rf/subscribe [:first-table?]))]
+(defn api-view [desc base]
+  (let [data @(rf/subscribe [:data])]
     [:div
       [:p desc]
       [:button {:on-click #(rf/dispatch [:load base])} "Start"]
-      (if data (data-table base data sortable?) [:p])]))
+      (if data (data-table base data) [:p])]))
 
 (def ^:const home-text "Welcome to the Hospice Leads Tool.
 Use Search to search and pin potential leads.
@@ -63,7 +63,7 @@ Explore lead contacts under Pins.")
   [:p home-text])
 
 (defn search []
-  (api-view "Search hospices by State." "/search" :sort-first? true))
+  (api-view "Search hospices by State." "/search"))
 
 (defn pins []
   (api-view "Explore pinned leads." "/pins"))

@@ -19,16 +19,17 @@
     (->
       (js/fetch (:url req))
       (.then (fn [resp] (.json resp)))
-      (.then (fn [data] (rf/dispatch (conj (:on-data req) data)))))))
+      ; TODO This may be uneeded flexibility, :on-data
+      (.then (fn [data] (rf/dispatch [(:on-data req) data]))))))
 
 (rf/reg-event-fx
   :data
-  (fn [{:keys [db]} [_ params data]]
+  (fn [{:keys [db]} [_ data]]
     (let [redirect (.-redirect data)]
       (if redirect
         {:dispatch [:navigate! (keyword redirect)]
          :db (dissoc db :data)}
-        {:db (assoc (dissoc db :sort) :data data :params params)}))))
+        {:db (assoc (dissoc db :sort) :data data)}))))
 
 (defn- get-params [params]
   (js/URLSearchParams. (clj->js params)))
@@ -42,7 +43,7 @@
   :load
   (fn [_ [_ base params]]
     {:fetch {:url (get-url base params)
-             :on-data [:data params]}}))
+             :on-data :data}}))
 
 (rf/reg-event-db
   :sort
