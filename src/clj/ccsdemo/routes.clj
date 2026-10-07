@@ -5,9 +5,12 @@
             [reitit.ring                       :as reitit]
             [ccsdemo.api                       :as api]))
 
+(defn contact-handler [req] {:status 501})
+
 (def routes
-  [["/search" {:get (api/handler-for api/search)}]
-   ["/pins"   {:get (api/handler-for api/pins)}]])
+  [["/search"   {:get (api/handler-for api/search)}]
+   ["/pins"     {:get (api/handler-for api/pins)}]
+   ["/contacts" {:get contact-handler}]])
 
 (def router (reitit/router routes))
 

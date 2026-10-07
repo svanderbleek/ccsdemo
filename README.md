@@ -35,6 +35,8 @@ psql
 =# \c ccsdemo
 =# CREATE TABLE hospice_pins (enroll CHAR(15) NOT NULL PRIMARY_KEY);
 =# ALTER TABLE hospice_owners ADD COLUMN owner INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY;
+=# CREATE TYPE contact_stage AS ENUM ('found', 'contacted', 'unresponsive', 'won', 'lost');
+=# CREATE TABLE contacts (owner INT NOT NULL PRIMARY KEY, contact VARCHAR(254), stage contact_stage NOT NULL DEFAULT 'found');
 ```
 
 ### Dev

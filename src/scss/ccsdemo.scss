@@ -3,6 +3,10 @@
   $enable-semantic-container: true
 );
 
+th {
+  text-transform: capitalize;
+}
+
 tr.clickable:hover td {
   cursor: pointer;
   background-color: #79c0ff !important;

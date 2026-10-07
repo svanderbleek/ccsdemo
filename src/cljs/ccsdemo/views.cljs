@@ -46,9 +46,10 @@
     {:on-click (fn [] (rf/dispatch [:load base {param (aget row param)}]))}))
 
 (defn data-row [base param cols google? row]
-  [:tr.clickable
-    (merge (react-key row) (click-row base param google? row))
-    (map (fn [col] (react-seq-cnt :td (str col row) (aget row col))) cols)])
+  (let [tds (map (fn [col] (react-seq-cnt :td (str col row) (aget row col))) cols)]
+    [:tr.clickable
+      (merge (react-key row) (click-row base param google? row))
+      (if google? (concat tds [(react-seq :td (aget row "owner"))]) tds)]))
 
 (defn data-table [base ^js data]
   (let [cols     (.-cols data)
@@ -56,10 +57,11 @@
         sort?    (= param "state")
         google?  (= param "owner")
         sorting  (when sort? @(rf/subscribe [:sort]))
-        rows     (sort-rows sorting (.-rows data))]
+        rows     (sort-rows sorting (.-rows data))
+        ths      (map (if sort? (partial sort-header sorting) (partial react-seq :th)) cols)]
     [:table.striped
       [:thead
-        [:tr (map (if sort? (partial sort-header sorting) (partial react-seq :th)) cols)]]
+        [:tr (if google? (concat ths [(react-seq :th "contact")]) ths)]]
       [:tbody
         (map (partial data-row base param cols google?) rows)]]))
 
@@ -84,7 +86,45 @@ Manage the contact pipeline under Contacts.")
 (defn pins []
   (api-view "Explore pinned leads." "/pins"))
 
-(defn contacts [] [:p "Coming soon!"])
+(defn contacts []
+  [:div
+    [:article
+      [:header "Org Name 1"]
+      [:form
+        [:h4 "First Last"]
+        [:label {:for "contact"} "Contact"]
+        [:input#contact {:type "text"}]
+        [:label {:for "note"} "Notes"]
+        [:textarea#note {:type "text"}]
+        [:label {:for "stage"} "Stage"]
+        [:select#stage
+          [:option "Found"]
+          [:option "Contacted"]
+         [:option "Unresponsive"]]]
+      [:form
+        [:h4 "First2 Last2"]
+        [:label {:for "contact2"} "Contact"]
+        [:input#contact2 {:type "text"}]
+        [:label {:for "note2"} "Notes"]
+        [:textarea#note2 {:type "text"}]
+        [:label {:for "stage2"} "Stage"]
+        [:select#stage2
+          [:option "Found"]
+          [:option "Contacted"]
+         [:option "Unresponsive"]]]]
+    [:article
+      [:header "Org Name 1"]
+      [:form
+        [:h4 "First3 Last3"]
+        [:label {:for "contact3"} "Contact"]
+        [:input#contact3 {:type "text"}]
+        [:label {:for "note3"} "Notes"]
+        [:textarea#note3 {:type "text"}]
+        [:label {:for "stage3"} "Stage"]
+        [:select#stage3
+          [:option "Found"]
+          [:option "Contacted"]
+          [:option "Unresponsive"]]]]])
 
 (defn link-route [route]
   [:li (react-key route)
