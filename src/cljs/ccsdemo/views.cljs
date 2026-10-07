@@ -72,8 +72,7 @@
 
 (def ^:const home-text "Welcome to the Hospice Leads Tool.
 Use Search to search and pin potential leads.
-Find contacts for pinned leads using Pins.
-Manage the contact pipeline under Contacts.")
+Find contacts for pinned leads using Pins.")
 
 (defn home []
   [:p home-text])
@@ -84,8 +83,6 @@ Manage the contact pipeline under Contacts.")
 (defn pins []
   (api-view "Explore pinned leads." "/pins"))
 
-(defn contacts [] [:p "Coming soon!"])
-
 (defn link-route [route]
   [:li (react-key route)
     [:a {:href (rfe/href (-> route second :name))} (-> route second :title)]])
@@ -94,8 +91,7 @@ Manage the contact pipeline under Contacts.")
   ["/"
     [""         {:name :home     :title "Home"     :view home}]
     ["search"   {:name :search   :title "Search"   :view search}]
-    ["pins"     {:name :pins     :title "Pins"     :view pins}]
-    ["contacts" {:name :contacts :title "Contacts" :view contacts}]])
+    ["pins"     {:name :pins     :title "Pins"     :view pins}]])
 
 (defn app []
   (let [route @(rf/subscribe [:route])]
