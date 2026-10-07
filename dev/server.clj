@@ -1,4 +1,4 @@
-(ns ccsdemo.main
+(ns server
   (:require [ring.adapter.jetty     :refer [run-jetty]]
             [ring.middleware.reload :refer [wrap-reload]]
             [ring.middleware.reload :refer [wrap-reload]]
@@ -6,5 +6,7 @@
             [ccsdemo.config         :as conf])
   (:gen-class))
 
+(def dev-app (wrap-reload #'routes/app {:dirs ["src/clj"]}))
+
 (defn -main []
-  (run-jetty routes/app (:server conf/values)))
+  (run-jetty #'dev-app (:server conf/values)))

@@ -1,6 +1,7 @@
 target/
 resources/public/js
 resources/public/css
+resources/config.edn
 data/files/
 node_modules/
 .shadow-cljs/

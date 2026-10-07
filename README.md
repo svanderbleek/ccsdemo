@@ -20,10 +20,11 @@ clj -M:ingest
 
 ### Setup
 
-Need some npm binaries to build
+Install npm binaries and generate css.
 
 ```
 npm install -g shadow-cljs sass
+sass --load-path=node_modules/@picocss/pico/scss src/scss/ccsdemo.scss resources/public/css/ccsdemo.css
 ```
 
 ### DB
@@ -39,10 +40,8 @@ psql
 ### Dev
 
 ```
-# only need to run once, rm resources/public/css/cssdemo.css if need to regen
-sass --load-path=node_modules/@picocss/pico/scss src/scss/ccsdemo.scss resources/public/css/ccsdemo.css
-
-clj -M:run:dev            # start backend first, hot reload
+cp config.dev.edn resources/config.edn
+clj -M:dev                # start backend first, hot reload
 shadow-cljs watch ccsdemo # frontend, hot reload
 ```
 
@@ -50,9 +49,10 @@ go to `localhost:3001/index.html`
 
 ### Prod
 
-Tag docker image with version and update in `deployment.yaml`
+Tag docker image with version and update in `deployment.yaml`. Fill in values in `config.edn.prod`.
 
 ```
+cp config.prod.edn resources/config.edn
 clj -T:build uber # Can test with java -jar target/name.jar
 
 docker buildx build --platform linux/amd64 -t us-central1-docker.pkg.dev/ccsdemo-510302/ccsdemo/app:version .
@@ -83,9 +83,9 @@ gcloud container clusters resize ccsdemo --num-nodes=0
 01h - Pins API and View  
 01h - Cleanup Code  
 01h - Google contact feature  
-01h - Fix Deploy
+02h - Deploy/Add Config
 
-Total 13 hours + Initial project setup
+Total 14 hours + Initial project setup
 
 ## Rationale
 
@@ -93,4 +93,4 @@ This is an internal tool so a rough UI that allows for quick iteration is allowe
 
 ## Todo
 
-* Deploy
+* Deploy with DB and config

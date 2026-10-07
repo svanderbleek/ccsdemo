@@ -1,0 +1,4 @@
+{:server   {:port 3001
+            :join? false}
+ :database {:dbtype "postgres"
+            :dbname "ccsdemo"}}
