@@ -85,7 +85,12 @@ gcloud container clusters resize ccsdemo --num-nodes=0
 01h - Google contact feature  
 01h - Fix Deploy
 
+Total 13 hours + Initial project setup
+
+## Rationale
+
+This is an internal tool so a rough UI that allows for quick iteration is allowed. Additional features like contact managment and lead pipelining were scrapped so that existing tools that do that better can be used. There is a non-trivial data component to the project in addition to the 3 layers of Frontend, API, and DB. That along with the deployment to GCP shows my full stack skillset.
+
 ## Todo
 
-* Google for contact from final pins view
-* Cleanup code
+* Deploy
