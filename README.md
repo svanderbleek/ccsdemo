@@ -101,5 +101,3 @@ Total 14 hours + Initial project setup
 This is an internal tool so a rough UI that allows for quick iteration is allowed. Additional features like contact managment and lead pipelining were scrapped so that existing tools that do that better can be used. There is a non-trivial data component to the project in addition to the 3 layers of Frontend, API, and DB. That along with the deployment to GCP shows my full stack skillset.
 
 ## Todo
-
-* Deploy with DB and config
