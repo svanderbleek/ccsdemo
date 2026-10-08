@@ -8,3 +8,4 @@ node_modules/
 .cpcache/
 .DS_STORE
 .claude/
+ccsdemo.sql

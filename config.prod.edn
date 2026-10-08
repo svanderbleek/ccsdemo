@@ -2,7 +2,6 @@
             :join? true}
  :database {:dbtype   "postgres"
             :dbname   "ccsdemo"
-            :host     "cloud sql"
-            :port     5432
-            :user     "user"
-            :password "pass"}}
+            :user     "postgres"
+            :password ""
+            :host     "10.112.208.3"}}

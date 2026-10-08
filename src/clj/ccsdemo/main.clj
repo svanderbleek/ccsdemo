@@ -1,7 +1,5 @@
 (ns ccsdemo.main
   (:require [ring.adapter.jetty     :refer [run-jetty]]
-            [ring.middleware.reload :refer [wrap-reload]]
-            [ring.middleware.reload :refer [wrap-reload]]
             [ccsdemo.routes         :as    routes]
             [ccsdemo.config         :as conf])
   (:gen-class))

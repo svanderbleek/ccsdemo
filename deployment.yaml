@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: ccsdemo-app-container
-        image: us-central1-docker.pkg.dev/ccsdemo-510302/ccsdemo/app:v2
+        image: us-central1-docker.pkg.dev/ccsdemo-510302/ccsdemo/app:v4
         ports:
         - containerPort: 3001
 ---

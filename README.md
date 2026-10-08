@@ -49,11 +49,20 @@ go to `localhost:3001/index.html`
 
 ### Prod
 
-Tag docker image with version and update in `deployment.yaml`. Fill in values in `config.edn.prod`.
+Dump and upload db if needed. 
+
+```
+pg_dump -d ccsdemo --no-owner --no-privileges -f ccsdemo.sql
+gcloud storage cp ccsdemo.sql gs://ccsdemo-sql-import/ # needs Storage Object Admin permission
+gcloud sql databases create ccsdemo --instance=ccsdemo # only do once
+gcloud sql import sql ccsdemo gs://ccsdemo-sql-import/ccsdemo.sql --database=ccsdemo --project=ccsdemo-510302
+```
+
+Fill in values in `config.edn.prod` and move to `resources/`. Will need to fill in password after `cp` to avoid commiting it. Tag docker image with version and update in `deployment.yaml`. 
 
 ```
 cp config.prod.edn resources/config.edn
-clj -T:build uber # Can test with java -jar target/name.jar
+clj -T:build uber
 
 docker buildx build --platform linux/amd64 -t us-central1-docker.pkg.dev/ccsdemo-510302/ccsdemo/app:version .
 docker push us-central1-docker.pkg.dev/ccsdemo-510302/ccsdemo/app:version
@@ -68,7 +77,7 @@ To save costs delete images from repository and downscale nodes
 
 ```
 gcloud artifacts docker images delete us-central1-docker.pkg.dev/ccsdemo-510302/ccsdemo/app
-gcloud container clusters resize ccsdemo --num-nodes=0
+gcloud container clusters resize ccsdemo-cluster --num-nodes=0
 ```
 
 ## Time Tracking
