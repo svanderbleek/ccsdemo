@@ -10,3 +10,5 @@ node_modules/
 .claude/
 ccsdemo.sql
 terraform/
+test-results/
+playwright-report/
