@@ -11,12 +11,18 @@ importers:
       '@picocss/pico':
         specifier: ^2.1.1
         version: 2.1.1
+      process:
+        specifier: ^0.11.10
+        version: 0.11.10
       react:
         specifier: ^19.3.0
         version: 19.3.0
       react-dom:
         specifier: ^19.3.0
         version: 19.3.0(react@19.3.0)
+      scheduler:
+        specifier: ^0.28.0
+        version: 0.28.0
     devDependencies:
       shadow-cljs:
         specifier: 3.5.3
