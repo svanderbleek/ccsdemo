@@ -84,7 +84,7 @@ kubectl apply -f deployment.yaml
 kubectl get service ccsdemo-app-service
 ```
 
-go to `http://EXTERNAL-IP/index.html`
+go to `http://35.208.193.27/index.html`
 
 To save costs delete images from repository and downscale nodes
 
