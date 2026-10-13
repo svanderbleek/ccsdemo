@@ -45,23 +45,23 @@
     {:on-click (fn [] (google-contact row))}
     {:on-click (fn [] (rf/dispatch [:load base {param (aget row param)}]))}))
 
-(defn data-row [base param cols google? row]
-  [:tr.clickable
-    (merge (react-key row) (click-row base param google? row))
-    (map (fn [col] (react-seq-cnt :td (str col row) (aget row col))) cols)])
+(defn data-row [base param cols row]
+  (let [google?  (= param "owner")]
+    [:tr.clickable
+      (merge (react-key row) (click-row base param google? row))
+      (map (fn [col] (react-seq-cnt :td (str col row) (aget row col))) cols)]))
 
 (defn data-table [base ^js data]
   (let [cols     (.-cols data)
         param    (.-param data)
         sort?    (= param "state")
-        google?  (= param "owner")
         sorting  (when sort? @(rf/subscribe [:sort]))
         rows     (sort-rows sorting (.-rows data))]
     [:table.striped
       [:thead
         [:tr (map (if sort? (partial sort-header sorting) (partial react-seq :th)) cols)]]
       [:tbody
-        (map (partial data-row base param cols google?) rows)]]))
+        (map (partial data-row base param cols) rows)]]))
 
 (defn api-view [desc base]
   (let [data @(rf/subscribe [:data])]

@@ -19,8 +19,7 @@
     (->
       (js/fetch (:url req))
       (.then (fn [resp] (.json resp)))
-      ; TODO This may be uneeded flexibility, :on-data
-      (.then (fn [data] (rf/dispatch [(:on-data req) data]))))))
+      (.then (fn [data] (rf/dispatch [:data data]))))))
 
 (rf/reg-event-fx
   :data
@@ -42,8 +41,7 @@
 (rf/reg-event-fx
   :load
   (fn [_ [_ base params]]
-    {:fetch {:url (get-url base params)
-             :on-data :data}}))
+    {:fetch {:url (get-url base params)}}))
 
 (rf/reg-event-db
   :sort
