@@ -11,5 +11,6 @@ To support multiple Agents working at the same time follow these rules.
 - Create the db with `createdb dbname`. Use `pg_dump -d ccsdemo --no-owner --no-privileges -f ccsdemo.sql` to export the db and `psql -d dbname -f ccsdemo.sql` to import the db.
 - Run the server with `clj -M:dev`, it supports hot reloading of code so only needs to be run once.
 - For the frontend, don't use `shadow-cljs watch ccsdemo`, instead use `shadow-cljs compile ccsdemo` to build each time changes are made. This is to avoid port conflicts with frontend hot reloading.
+- The CSS is built with `sass --load-path=node_modules/@picocss/pico/scss src/scss/ccsdemo.scss resources/public/css/ccsdemo.css`. If changes are made and it needs to be rebuilt delete the CSS first with `rm resources/public/css/ccsdemo.css`.
 - Use `pnpm` for node dependencies.
 - Once finished make a PR on github.
