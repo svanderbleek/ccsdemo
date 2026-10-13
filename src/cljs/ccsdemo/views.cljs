@@ -27,9 +27,15 @@
       (merge (react-key col) (click-sort col) {:aria-sort dir})
       col (sort-arrows dir)]))
 
+(def numeric-sort-cols #{"payout" "persons" "days"})
+
+(defn sort-value [row col]
+  (let [value (aget row col)]
+    (if (numeric-sort-cols col) (js/Number value) value)))
+
 (defn sort-rows [{:keys [col asc?]} rows]
   (if col
-    (sort-by #(aget % col) (if asc? compare #(compare %2 %1)) rows)
+    (sort-by #(sort-value % col) (if asc? compare #(compare %2 %1)) rows)
     rows))
 
 (defn owner-query [row]
