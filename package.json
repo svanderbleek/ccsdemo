@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "@playwright/test": "^1.64.0",
     "shadow-cljs": "3.5.3"
   },
   "dependencies": {
@@ -11,5 +12,8 @@
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "scheduler": "^0.28.0"
+  },
+  "scripts": {
+    "test:e2e": "playwright test"
   }
 }

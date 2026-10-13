@@ -47,6 +47,16 @@ shadow-cljs watch ccsdemo # frontend, hot reload
 
 go to `localhost:3001/index.html`
 
+### Test
+
+End-to-end tests use Playwright against a running dev server.
+
+```
+pnpm install
+pnpm exec playwright install chromium
+BASE_URL=http://localhost:3001 pnpm test:e2e
+```
+
 ### Prod
 
 Dump and upload db if needed. 
