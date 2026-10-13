@@ -52,8 +52,7 @@ go to `localhost:3001/index.html`
 End-to-end tests use Playwright against a running dev server.
 
 ```
-pnpm install
-pnpm exec playwright install chromium
+pnpm exec playwright install chromium # one time setup
 pnpm test:e2e
 ```
 
