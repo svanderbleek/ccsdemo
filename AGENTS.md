@@ -13,4 +13,5 @@ To support multiple Agents working at the same time follow these rules.
 - For the frontend, don't use `shadow-cljs watch ccsdemo`, instead use `shadow-cljs compile ccsdemo` to build each time changes are made. This is to avoid port conflicts with frontend hot reloading.
 - The CSS is built with `sass --load-path=node_modules/@picocss/pico/scss src/scss/ccsdemo.scss resources/public/css/ccsdemo.css`. If changes are made and it needs to be rebuilt delete the CSS first with `rm resources/public/css/ccsdemo.css`.
 - Use `pnpm` for node dependencies.
+- To run tests with playwright set an env variable with the server port and run `BASE_URL=http://localhost:port pnpm test:e2e`.
 - Once finished make a PR on github.

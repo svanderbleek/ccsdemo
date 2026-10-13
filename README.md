@@ -54,7 +54,7 @@ End-to-end tests use Playwright against a running dev server.
 ```
 pnpm install
 pnpm exec playwright install chromium
-BASE_URL=http://localhost:3001 pnpm test:e2e
+pnpm test:e2e
 ```
 
 ### Agents
