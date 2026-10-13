@@ -45,6 +45,6 @@
 
 (rf/reg-event-db
   :sort
-  (fn [db [_ col]]
+  (fn [db [_ col first-asc?]]
     (let [{sort-col :col asc? :asc?} (:sort db)]
-      (assoc db :sort {:col col :asc? (if (= col sort-col) (not asc?) true)}))))
+      (assoc db :sort {:col col :asc? (if (= col sort-col) (not asc?) first-asc?)}))))
