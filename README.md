@@ -23,7 +23,7 @@ clj -M:ingest
 Install npm binaries and generate css.
 
 ```
-npm install -g shadow-cljs sass
+pnpm add -g shadow-cljs sass
 sass --load-path=node_modules/@picocss/pico/scss src/scss/ccsdemo.scss resources/public/css/ccsdemo.css
 ```
 
@@ -106,7 +106,7 @@ gcloud container clusters resize ccsdemo-cluster --num-nodes=0
 01h - Pins API and View  
 01h - Cleanup Code  
 01h - Google contact feature  
-02h - Deploy/Add Config
+02h - Deploy/Add Config  
 01h - Parallel Agents setup
 
 Total 15 hours + Initial project setup
@@ -114,8 +114,3 @@ Total 15 hours + Initial project setup
 ## Rationale
 
 This is an internal tool so a rough UI that allows for quick iteration is allowed. Additional features like contact managment and lead pipelining were scrapped so that existing tools that do that better can be used. There is a non-trivial data component to the project in addition to the 3 layers of Frontend, API, and DB. That along with the deployment to GCP shows my full stack skillset. The AGENTS.md and additional features added with Claude and Codex demonstrates proficiency with AI agents and modern software development.
-
-## Todo
-
-- Add some more features/fixes with agents
-- Deploy
