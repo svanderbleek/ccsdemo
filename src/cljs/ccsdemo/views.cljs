@@ -12,8 +12,11 @@
 (defn react-seq-cnt [el obj cnt]
   [el (react-key obj) cnt])
 
+(def numeric-sort-cols #{"payout" "persons" "days"})
+
 (defn click-sort [col]
-  {:on-click (fn [] (rf/dispatch [:sort col]))})
+  (let [first-asc? (not (numeric-sort-cols col))]
+    {:on-click (fn [] (rf/dispatch [:sort col first-asc?]))}))
 
 (defn sort-dir [{sort-col :col asc? :asc?} col]
   (when (= col sort-col)
@@ -26,8 +29,6 @@
     [:th.sortable
       (merge (react-key col) (click-sort col) {:aria-sort dir})
       col (sort-arrows dir)]))
-
-(def numeric-sort-cols #{"payout" "persons" "days"})
 
 (defn sort-value [row col]
   (let [value (aget row col)]
